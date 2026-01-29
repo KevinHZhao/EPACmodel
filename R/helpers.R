@@ -2,14 +2,14 @@
 # - - - - - - - - - - - - - - - - -
 
 calculate_transmission <- function(model.name, values, ...){
-  if(model.name != "hosp") stop("calculate_transmission is currently only implemented for the `hosp` model")
+  if(!(model.name %in% c("hosp", "hosp-treat"))) stop("calculate_transmission is currently only implemented for the `hosp` models")
 
   calculate_transmission_hosp(values, ...)
 }
 
 # Generic function to calculate flow for various models
 calculate_flow <- function(model.name, values){
-  if(model.name != "hosp") stop("calculate_flow is currently only implemented for the `hosp` model")
+  if(!(model.name %in% c("hosp", "hosp-treat"))) stop("calculate_flow is currently only implemented for the `hosp` model")
 
   calculate_flow_hosp(values)
 }

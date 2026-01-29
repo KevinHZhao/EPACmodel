@@ -12,6 +12,7 @@ C_R,lb0
 C_D,lb0
 R,lb0
 D,lb0
+T,lb0
 N,lb0
 I,lb0
 infection,lb0
@@ -43,6 +44,7 @@ C_R,lb5
 C_D,lb5
 R,lb5
 D,lb5
+T,lb5
 N,lb5
 I,lb5
 infection,lb5
@@ -74,6 +76,7 @@ C_R,lb10
 C_D,lb10
 R,lb10
 D,lb10
+T,lb10
 N,lb10
 I,lb10
 infection,lb10
@@ -105,6 +108,7 @@ C_R,lb15
 C_D,lb15
 R,lb15
 D,lb15
+T,lb15
 N,lb15
 I,lb15
 infection,lb15
@@ -136,6 +140,7 @@ C_R,lb20
 C_D,lb20
 R,lb20
 D,lb20
+T,lb20
 N,lb20
 I,lb20
 infection,lb20
@@ -167,6 +172,7 @@ C_R,lb25
 C_D,lb25
 R,lb25
 D,lb25
+T,lb25
 N,lb25
 I,lb25
 infection,lb25
@@ -198,6 +204,7 @@ C_R,lb30
 C_D,lb30
 R,lb30
 D,lb30
+T,lb30
 N,lb30
 I,lb30
 infection,lb30
@@ -229,6 +236,7 @@ C_R,lb35
 C_D,lb35
 R,lb35
 D,lb35
+T,lb35
 N,lb35
 I,lb35
 infection,lb35
@@ -260,6 +268,7 @@ C_R,lb40
 C_D,lb40
 R,lb40
 D,lb40
+T,lb40
 N,lb40
 I,lb40
 infection,lb40
@@ -291,6 +300,7 @@ C_R,lb45
 C_D,lb45
 R,lb45
 D,lb45
+T,lb45
 N,lb45
 I,lb45
 infection,lb45
@@ -322,6 +332,7 @@ C_R,lb50
 C_D,lb50
 R,lb50
 D,lb50
+T,lb50
 N,lb50
 I,lb50
 infection,lb50
@@ -353,6 +364,7 @@ C_R,lb55
 C_D,lb55
 R,lb55
 D,lb55
+T,lb55
 N,lb55
 I,lb55
 infection,lb55
@@ -384,6 +396,7 @@ C_R,lb60
 C_D,lb60
 R,lb60
 D,lb60
+T,lb60
 N,lb60
 I,lb60
 infection,lb60
@@ -415,6 +428,7 @@ C_R,lb65
 C_D,lb65
 R,lb65
 D,lb65
+T,lb65
 N,lb65
 I,lb65
 infection,lb65
@@ -446,6 +460,7 @@ C_R,lb70
 C_D,lb70
 R,lb70
 D,lb70
+T,lb70
 N,lb70
 I,lb70
 infection,lb70
@@ -477,6 +492,7 @@ C_R,lb75
 C_D,lb75
 R,lb75
 D,lb75
+T,lb75
 N,lb75
 I,lb75
 infection,lb75
@@ -508,6 +524,7 @@ C_R,lb80
 C_D,lb80
 R,lb80
 D,lb80
+T,lb80
 N,lb80
 I,lb80
 infection,lb80

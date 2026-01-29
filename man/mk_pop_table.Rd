@@ -7,7 +7,7 @@
 mk_pop_table(age.group.lower = NULL)
 }
 \arguments{
-\item{age.group.lower}{Numeric vector. Lower bounds for desired age groups}
+\item{age.group.lower}{(optional) Numeric vector. Lower bounds for aggregated age groups, if desired.}
 }
 \value{
 A data frame with columns

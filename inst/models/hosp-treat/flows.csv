@@ -9,6 +9,10 @@ I_A,A_R,admission_to_A_R,per_capita,Epi,Epi,Epi,Age,Age,Null
 I_A,A_CR,admission_to_A_CR,per_capita,Epi,Epi,Epi,Age,Age,Null
 I_A,A_CD,admission_to_A_CD,per_capita,Epi,Epi,Epi,Age,Age,Null
 I_A,A_D,admission_to_A_D,per_capita,Epi,Epi,Epi,Age,Age,Null
+I_A,T,admission_to_A_R,per_capita,Epi,Epi,Epi,Age,Age,Null
+I_A,T,admission_to_A_CR,per_capita,Epi,Epi,Epi,Age,Age,Null
+I_A,T,admission_to_A_CD,per_capita,Epi,Epi,Epi,Age,Age,Null
+I_A,T,admission_to_A_D,per_capita,Epi,Epi,Epi,Age,Age,Null
 A_R,R,discharge_from_A_R,per_capita,Epi,Epi,Epi,Age,Age,Null
 A_CR,C_R,admission_to_C_R,per_capita,Epi,Epi,Epi,Age,Age,Null
 A_CD,C_D,admission_to_C_D,per_capita,Epi,Epi,Epi,Age,Age,Null
