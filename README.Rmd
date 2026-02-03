@@ -20,7 +20,7 @@ knitr::opts_chunk$set(
 <!-- badges: start -->
 <!-- badges: end -->
 
-This package implements the Early Pandemic Age-Structured Compartmental (EPAC) model developed by [Michael WZ Li](https://github.com/wzmli) and [Irena Papst](https://github.com/papsti) from the [Public Health Risk Sciences Division](https://github.com/phac-nml-phrsd) of the Public Health Agency of Canada using  [`macpan2`](https://github.com/canmod/macpan2) modelling software. 
+This package implements the Early Pandemic Age-Structured Compartmental (EPAC) model developed by [Michael WZ Li](https://github.com/wzmli) and [Irena Papst](https://github.com/papsti) from the [Public Health Agency of Canada's Modelling Hub](https://github.com/phac-modelling-hub) using  [`macpan2`](https://github.com/canmod/macpan2) modelling software. 
 
 The goal of this package is to catalogue, document, and version iterations of the Early Pandemic Age-structured Compartmental model so that they can be pulled easily into project-specific pipelines to produce modelling outputs. 
 
@@ -29,15 +29,15 @@ The goal of this package is to catalogue, document, and version iterations of th
 Versioned releases of `EPACmodel` can be installed with
 
 ```{r eval = FALSE}
-remotes::install_github("phac-nml-phrsd/EPACmodel@vx.y.z")
+remotes::install_github("phac-modelling-hub/EPACmodel@vx.y.z")
 ```
 
-where `x.y.z` is the version number. Available version numbers can be found [here](https://github.com/phac-nml-phrsd/EPACmodel/releases).
+where `x.y.z` is the version number. Available version numbers can be found [here](https://github.com/phac-modelling-hub/EPACmodel/releases).
 
 The development version of `EPACmodel` can be installed with:
 
 ```{r eval = FALSE}
-remotes::install_github("phac-nml-phrsd/EPACmodel")
+remotes::install_github("phac-modelling-hub/EPACmodel")
 ```
 
 ## Getting started
@@ -46,5 +46,5 @@ A getting started guide can be found in `vignette("EPACmodel")`.
 
 ## For developers
 
-Please start by reading the [developer notes](https://phac-nml-phrsd.github.io/EPACmodel/articles/dev).
+Please start by reading the [developer notes](https://phac-modelling-hub.github.io/EPACmodel/articles/dev).
 
