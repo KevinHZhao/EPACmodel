@@ -4,12 +4,14 @@
 \alias{mk_contact_pars}
 \title{Make contact matrix from Mistry et al. data}
 \usage{
-mk_contact_pars(age.group.lower, setting.weight)
+mk_contact_pars(age.group.lower = NULL, setting.weight, pop.new = NULL)
 }
 \arguments{
-\item{age.group.lower}{Numeric vector. Lower bounds for desired age groups}
+\item{age.group.lower}{(optional) Numeric vector. Lower bounds for aggregated age groups, if desired.}
 
 \item{setting.weight}{Named numeric vector of the average contact rate by setting to reflect closures.}
+
+\item{pop.new}{(optional) Numeric vector. Specifies new population sizes by age with which to renormalize contact matrices. Must match up with age groups given in \code{age.group.lower} (if provided) or original Mistry age groups (one year age groups up to 84, with a single age group for 85+).}
 }
 \value{
 A list with:

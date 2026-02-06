@@ -1,0 +1,24 @@
+### `hosp-treat` model
+
+This version of the model has the same epidemiological structure as the `hosp` model, except we additionally track treated individuals in compartment $T$. Currently, all hospitalized individuals are treated and treatment has no effect on downstream outcomes in simulation. Essentially $T$ is just an accumulator compartment to track cumulative hospitalizations.
+
+#### Input values
+
+Input values are the same as for the `hosp` model:
+
+```{r echo=FALSE}
+params_df <- readr::read_csv(
+    "figs/params_hosp.csv",
+    show_col_types = FALSE
+)
+DT::datatable(
+    params_df,
+    options = list(pageLength = 3),
+    filter = "none"
+)
+```
+
+
+#### Available scenarios {#available-scenarios-fyagm}
+
+Available scenarios are the same as for the `hosp` model.
