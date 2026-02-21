@@ -10,15 +10,15 @@ if(scenario.name == "change-contacts"){
       values$trans.factor*values$transmissibility*contact.pars.new$c.hat
     )
     , n.age.group = length(age.group.lower)
-    , .mats_to_save = c("contact.", "transmission.")
-    , .mats_to_return = c("contact.", "transmission.")
+    , .mats_to_save = c("contact.", "transmission")
+    #, .mats_to_return = c("contact.", "transmission") # Not returning for consistency with other scenario
   )$insert$expressions(
     contact_pointer ~ time_group(contact_pointer, contact_changepoints)
     , contact. ~ block(contact_values, n.age.group * contact_pointer,
                        0, n.age.group, n.age.group)
-    , transmission. ~ block(transmission_values,
+    , transmission ~ block(transmission_values,
                             0, contact_pointer,
                             n.age.group, 1)
     , .phase = "during"
-  )
+  ) # This should still work, but might not be a good way to do things
 }

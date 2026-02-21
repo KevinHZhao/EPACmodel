@@ -40,5 +40,5 @@ model <- macpan2::mp_tmb_model_spec(
   during = flows,
   default = default,
   inits = inits,
-  must_save = c("state", "total_inflow", "infect")
+  must_save = c("state")
 )

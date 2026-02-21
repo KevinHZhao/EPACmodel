@@ -3,17 +3,19 @@
 #' @template param_model.name
 #' @template param_local
 #'
-#' @return A [macpan2::Model()] object
+#' @return A [macpan2::TMBModelSpec()] object
 #' @export
 get_model <- function(
     model.name,
     local = FALSE
 ){
-  macpan2::Model(macpan2::ModelFiles(
+  model_path <-
     get_model_path(
       model.name = model.name,
       file.name = NULL,
       local = local
     )
-  ))
+
+  sys.source(fs::path(model_path, "model-spec.R"), envir = environment())
+  return(model)
 }

@@ -1,0 +1,177 @@
+---
+title: "mid-contract-report"
+output: html_document
+---
+
+Scripts to recreate expected output objects (already generated), to be run 
+on old `EPACmodel` version:
+```{r eval=FALSE}
+##Install old version of EPACmodel
+remotes::install_github("phac-modelling-hub/EPACmodel@v1.3.0")
+
+library(EPACmodel)
+
+old_sim <- make_simulator("five-year-age-groups")
+old_sim_change <- make_simulator("five-year-age-groups", "change-contacts")
+expected_output <- simulate(old_sim)
+expected_output_change <- simulate(old_sim_change)
+
+save(expected_output, expected_output_change, file = "dev/expected_outputs.RData")
+```
+
+Run this once to ensure you are on the updated fork of `EPACmodel`:
+```{r eval=FALSE}
+remotes::install_github("KevinHZhao/EPACmodel")
+```
+
+```{r setup, include=FALSE}
+library(EPACmodel)
+```
+
+# a. Reimplementation progress (model features re-implemented successfully, model features outstanding)
+
+We have updated the `make_simulator()`, `get_model()`, and `simulate()` functions
+to use modern `macpan2` when creating and simulating the "five-year-age-groups"
+model, including when the "change-contacts" scenario is enabled.
+Only this model and its features have been updated, so the other models ("hosp",
+"hosp-treat", "old-and-young"), which still use old `macpan2` do not work on 
+this version of `EPACmodel`.
+The "hosp" model is planned to also be updated, with other models being updated
+if time permits.
+
+From updating to modern `macpan2`, `macpan2::Model` objects no longer exist,
+and `get_model()` now produces `TMBModelSpec` objects.
+The creation of this model object has been modified with the intention of being
+easier to wield with varying age groups; the default values are now scalars
+ignoring age structure, instead of having scalars for each of the age grouped 
+state/flow variables.
+These default values can be modified when the simulator object is built to be
+vectors, as we will later show.
+The model expressions have also been simplified, as they use the age grouped
+state/flow variable vectors to compute the flows at each time step.
+An advantage of these modifications are that now, when building the simulator
+object, it would be very simple to modify the code with different age groups
+by modifying `age.group.lower` in the `run-before-simulator.R` script/making
+it a user specified argument when calling `make_simulator`, and supplying the
+relevant `values` appropriate to the age groupings.
+
+```{r}
+model <- get_model("five-year-age-groups")
+print(model)
+```
+
+Our updates to the simulator functions still produce results consistent with
+the old version of `EPACmodel`'s "five-year-age-groups" model, up to some
+differences in data structure.
+
+```{r}
+## Loads expected_output and expected_output_change
+load("dev/expected_outputs.RData")
+
+## Create current simulator outputs
+sim <- make_simulator("five-year-age-groups")
+current_output <- simulate(sim)
+
+head(expected_output)
+head(current_output)
+```
+
+Beyond differences in the ordering of rows, "total_inflow" rows are no longer
+present in the returned object, as it seems modern `macpan2` has removed the
+ability to return these inflows.
+Instead of `value_type` describing whether the row describes the value of a
+state variable or that state variable's total inflow, it now simply refers to
+the state vector to which that row belongs to at the specified `time`.
+
+Another change is that, in the previous version of `EPACmodel`, the simulation
+would return an extra time step (ending on the 61st time step instead of the
+60th by default).
+This appears to not be an intentional feature, and in our updated version, this
+extra time step is no longer present.
+
+```{r}
+unique(expected_output$time)
+unique(current_output$time)
+```
+
+We can verify that the returned `value`'s are near identical matches by full
+joining the two data frames by `time` and `state_name`, after removing the
+"total_inflow" rows in `expected_output` and ignoring the extra time step.
+
+```{r}
+library(dplyr)
+
+compare <- 
+  expected_output |>
+  filter(value_type == "state", time != 61) |>
+  full_join(current_output, by = c("time", "state_name")) |>
+  select(time, state_name, value.x, value.y)
+
+all.equal(compare$value.x, compare$value.y)
+```
+
+We can also perform the same comparison for the "change-contacts" scenario.
+We have modified this scenario by having it NOT return the contact and transmission
+values when simulating, though the returned values remain all essentially identical.
+
+```{r}
+sim_change <- make_simulator("five-year-age-groups", "change-contacts")
+current_output_change <- simulate(sim_change)
+
+compare_change <- 
+  expected_output_change |>
+  filter(value_type == "state", time != 61) |>
+  full_join(current_output_change, by = c("time", "state_name")) |>
+  select(time, state_name, value.x, value.y)
+
+all.equal(compare_change$value.x, compare_change$value.y)
+```
+
+As mentioned before, the outstanding model features are to re-implement the other
+models.
+
+# b. New unit tests written and current test coverage
+
+Currently, many of the unit tests use the "old-and-young" model, which we have
+not yet updated to work in modern `macpan2`, meaning they return failures.
+Unit tests equivalent to these "old-and-young" model tests have been added for
+the `get_model()` and `simulate()` functions when using the "five-year-age-groups" model.
+For the `make_simulator()` tests, one of the tests checks that "transmission" is
+properly updated to be all "0" when given the appropriate `values`.
+Before, "transmission" was obtained by running
+
+```{r eval=FALSE}
+    make_simulator(
+      model.name = "five-year-age-groups",
+      values = values)$tmb_model$data_arg()$mats[[3]]
+```
+
+but due to re-ordering in our updates, we have modified this test to run
+
+```{r eval=FALSE}
+    make_simulator(
+      model.name = "five-year-age-groups",
+      values = values)$tmb_model$data_arg()$mats[[1]]
+```
+
+to properly access "transmission".
+
+We have also added simple snapshot tests for the default "five-year-age-groups"
+model in all three of the above functions, as well as the "change-contacts" 
+scenario for the `make_simulator()` and `simulate()` functions.
+
+# c. New package documentation added
+
+Currently, the only change to documentation have been to `?get_model`, specifying
+the returned object is of class `TMBModelSpec` instead of `Model`, and to `?simulate`,
+specifying that the returned data frame now only has state variables listed in
+`value_type`, and substructures in `state_name`.
+
+Documentation will be further updated once re-implementation features are
+complete.
+
+# d. New GitHub issues opened
+
+As of now, no new GitHub issues have had to be opened, as we have not yet
+encountered bugs/unexpected behaviour in the package beyond what we have listed
+in this document.

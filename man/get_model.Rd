@@ -12,7 +12,7 @@ get_model(model.name, local = FALSE)
 \item{local}{logical. if TRUE, use local model definition (in \code{models} subdirectory of main project repo). if FALSE, use package models.}
 }
 \value{
-A \code{\link[macpan2:Model]{macpan2::Model()}} object
+A \code{\link[macpan2:TMBModelSpec]{macpan2::TMBModelSpec()}} object
 }
 \description{
 Construct a model object from model definition files

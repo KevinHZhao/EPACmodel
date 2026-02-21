@@ -15,8 +15,8 @@ simulate(simulator, values = NULL)
 A data frame containing simulation results with columns
 \itemize{
 \item \code{time}: time in days from simulation start
-\item \code{state_name}: compartment name
-\item \code{value_type}: type of values, such as \code{state} (count of individuals in a compartment) and \code{total_inflow} (total inflow into a compartment)
+\item \code{state_name}: state variable with substructure (e.g., "S.lb0")
+\item \code{value_type}: type of state variable (e.g., "S")
 \item \code{value}
 }
 }

@@ -22,33 +22,33 @@ flow <- init_flow_vec(
   age_groups = age.group.lower
 )
 
-values$flow <- (flow 
-  # outflow for E 
-  |> update_flow(
-    pattern = "^progression",
-    value = 1/values$days_incubation
-  )
-  # outflows for I
-  |> update_flow(
-    pattern = "^recovery",
-    value = (1-values$prop_hosp-1/(1/values$prop_IFR_all - 1/values$prop_IFR_hosp))*1/values$days_infectious
-  )
-  |> update_flow(
-    pattern = "^hospitalization",
-    value = values$prop_hosp*1/values$days_infectious
-  )
-  |> update_flow(
-    pattern = "^death_I",
-    value = 1/(1/values$prop_IFR_all - 1/values$prop_IFR_hosp)*1/values$days_infectious
-  )
-  # outflows for H
-  |> update_flow(
-    pattern = "^discharge",
-    value = (1-values$prop_IFR_hosp)*1/values$days_hosp
-  )
-  |> update_flow(
-    pattern = "^death_H",
-    value = values$prop_IFR_hosp*1/values$days_hosp
-  )
+values$flow <- (flow
+                # outflow for E
+                |> update_flow(
+                  pattern = "^progression",
+                  value = 1/values$days_incubation
+                )
+                # outflows for I
+                |> update_flow(
+                  pattern = "^recovery",
+                  value = (1-values$prop_hosp-1/(1/values$prop_IFR_all - 1/values$prop_IFR_hosp))*1/values$days_infectious
+                )
+                |> update_flow(
+                  pattern = "^hospitalization",
+                  value = values$prop_hosp*1/values$days_infectious
+                )
+                |> update_flow(
+                  pattern = "^death_I",
+                  value = 1/(1/values$prop_IFR_all - 1/values$prop_IFR_hosp)*1/values$days_infectious
+                )
+                # outflows for H
+                |> update_flow(
+                  pattern = "^discharge",
+                  value = (1-values$prop_IFR_hosp)*1/values$days_hosp
+                )
+                |> update_flow(
+                  pattern = "^death_H",
+                  value = values$prop_IFR_hosp*1/values$days_hosp
+                )
 )
 

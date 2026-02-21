@@ -1,46 +1,69 @@
-model$simulators$tmb(
-  time_steps = values$time.steps,
-  state = values$state,
-  flow = values$flow,
-  transmission. = transmission,
-  contact. = contact.pars.initial$p.mat,
-  N.lb0 = macpan2::empty_matrix,
-  N.lb5 = macpan2::empty_matrix,
-  N.lb10 = macpan2::empty_matrix,
-  N.lb15 = macpan2::empty_matrix,
-  N.lb20 = macpan2::empty_matrix,
-  N.lb25 = macpan2::empty_matrix,
-  N.lb30 = macpan2::empty_matrix,
-  N.lb35 = macpan2::empty_matrix,
-  N.lb40 = macpan2::empty_matrix,
-  N.lb45 = macpan2::empty_matrix,
-  N.lb50 = macpan2::empty_matrix,
-  N.lb55 = macpan2::empty_matrix,
-  N.lb60 = macpan2::empty_matrix,
-  N.lb65 = macpan2::empty_matrix,
-  N.lb70 = macpan2::empty_matrix,
-  N.lb75 = macpan2::empty_matrix,
-  N.lb80 = macpan2::empty_matrix,
-  N. = macpan2::empty_matrix,
-  scaled_infected. = macpan2::empty_matrix,
-  infection. = macpan2::empty_matrix,
-  infected. = macpan2::empty_matrix,
-  dummy. = macpan2::empty_matrix
-  , .mats_to_return = c("state", "total_inflow")
-  , .dimnames = list(total_inflow = list(names(values$state), ""))
-
-  ## This is a hack. It is only necessary because I have not moved the
-  ## better indexing functionality in the insert objects to the parsing
-  ## of the derivation files.
-)$insert$expressions(
-  dummy ~ assign(flow, c(
-    infection.lb0, infection.lb5, infection.lb10, infection.lb15,
-    infection.lb20,infection.lb25, infection.lb30, infection.lb35,
-    infection.lb40, infection.lb45, infection.lb50, infection.lb55,
-    infection.lb60, infection.lb65, infection.lb70, infection.lb75,
-    infection.lb80
-  ), 0, infection.)
-  , .at = 4L
-  , .phase = "during"
-  , .vec_by_flows = ""
+states <- c(
+  "S",
+  "E",
+  "R",
+  "H",
+  "I",
+  "D"
 )
+
+age_over <- c(
+  states,
+  "N",
+  "prog",
+  "rec",
+  "hosp",
+  "disch",
+  "d_H",
+  "d_I",
+  "infect"
+) # Epi variables to stratify by age over
+
+nage <- length(age.group.lower)
+agelabs <- paste0("lb", age.group.lower)
+
+extract_dot <- function(v, var){
+  return(v[grepl(paste0("^",var,"\\."), names(v))])
+}
+
+N <- rep(0, nage)
+for (i in age_over[1:6]){
+  N <- N + extract_dot(values$state, i)
+}
+
+default <-
+  with(values,
+       list(
+         transmission = transmission,
+         progression = extract_dot(flow, "progression"),
+         hospitalization = extract_dot(flow, "hospitalization"),
+         discharge = extract_dot(flow, "discharge"),
+         recovery = extract_dot(flow, "recovery"),
+         death_H = extract_dot(flow, "death_H"),
+         death_I = extract_dot(flow, "death_I"),
+         contact. = contact.pars.initial$p.mat
+       )
+  )
+
+inits <-
+  with(values,
+       list(
+         S = extract_dot(state, "S"),
+         E = extract_dot(state, "E"),
+         I = extract_dot(state, "I"),
+         H = extract_dot(state, "H"),
+         R = extract_dot(state, "R"),
+         D = extract_dot(state, "D")
+       )
+  )
+
+model_simulator <-
+  model |>
+  macpan2::mp_tmb_insert(
+    default = default,
+    inits = inits
+  ) |>
+  macpan2::mp_simulator(
+    time_steps = values$time.steps,
+    outputs = c(states) # This can be changed to for example, age_over to get more of the values for debugging
+  )

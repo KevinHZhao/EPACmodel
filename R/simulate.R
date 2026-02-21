@@ -5,14 +5,14 @@
 #'
 #' @return A data frame containing simulation results with columns
 #'  - `time`: time in days from simulation start
-#'  - `state_name`: compartment name
-#'  - `value_type`: type of values, such as `state` (count of individuals in a compartment) and `total_inflow` (total inflow into a compartment)
+#'  - `state_name`: state variable with substructure (e.g., "S.lb0")
+#'  - `value_type`: type of state variable (e.g., "S")
 #'  - `value`
 #' @export
 simulate <- function(simulator, values = NULL) {
 
   if (is.null(values)) {
-    sim = simulator$report()
+    sim = macpan2::mp_trajectory(simulator, include_initial = TRUE) ## only this part updated
   } else {
     message("Updating simulator values in `simulate` only supported for the `hosp` model currently.")
     # sim with new input values

@@ -9,7 +9,7 @@ License: MIT + file LICENSE
 URL: https://phac-modelling-hub.github.io/EPACmodel, https://github.com/phac-modelling-hub/EPACmodel
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.3.2
+RoxygenNote: 7.3.3
 Imports: 
     macpan2,
     fs,
@@ -29,6 +29,6 @@ Suggests:
     DT,
     forcats,
     devtools
-Remotes: canmod/macpan2@98fb990
+Remotes: canmod/macpan2
 Config/testthat/edition: 3
 VignetteBuilder: knitr
