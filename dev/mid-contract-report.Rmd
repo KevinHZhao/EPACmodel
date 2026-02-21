@@ -1,7 +1,20 @@
 ---
-title: "mid-contract-report"
+title: "Mid-contract report"
+author: David Earn and Kevin Zhao
 output: html_document
 ---
+
+This is the required mid-contract report for PHAC contract No.~4500489267 ("Re-implementing two versions of the EPAC model").
+As specified in Annex Section 3.1 on page 8 of the contract, this report constitutes deliverable 1.
+
+This document was compiled on
+```{r echo=FALSE}
+Sys.time()
+```
+
+In order to reproduce this document from source, please follow the following procedure:
+
+**DE:** _The following is not clear to me.  We need to talk about how to rephrase this._
 
 Scripts to recreate expected output objects (already generated), to be run 
 on old `EPACmodel` version:
