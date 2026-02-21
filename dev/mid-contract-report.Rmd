@@ -19,9 +19,10 @@ expected_output_change <- simulate(old_sim_change)
 save(expected_output, expected_output_change, file = "dev/expected_outputs.RData")
 ```
 
-Run this once to ensure you are on the updated fork of `EPACmodel`:
+Run this once to ensure you are on the updated fork of `EPACmodel` as of writing
+this document:
 ```{r eval=FALSE}
-remotes::install_github("KevinHZhao/EPACmodel")
+remotes::install_github("KevinHZhao/EPACmodel@e30793b")
 ```
 
 ```{r setup, include=FALSE}
@@ -66,7 +67,7 @@ differences in data structure.
 
 ```{r}
 ## Loads expected_output and expected_output_change
-load("dev/expected_outputs.RData")
+load("expected_outputs.RData")
 
 ## Create current simulator outputs
 sim <- make_simulator("five-year-age-groups")
@@ -79,8 +80,8 @@ head(current_output)
 Beyond differences in the ordering of rows, "total_inflow" rows are no longer
 present in the returned object, as it seems modern `macpan2` has removed the
 ability to return these inflows.
-Instead of `value_type` describing whether the row describes the value of a
-state variable or that state variable's total inflow, it now simply refers to
+Instead of `value_type` describing whether the row describes `state_name`'s 
+value or `state_name`'s total inflow, it now simply refers to
 the state vector to which that row belongs to at the specified `time`.
 
 Another change is that, in the previous version of `EPACmodel`, the simulation
