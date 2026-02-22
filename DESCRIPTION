@@ -29,6 +29,6 @@ Suggests:
     DT,
     forcats,
     devtools
-Remotes: canmod/macpan2
+Remotes: canmod/macpan2@614a577
 Config/testthat/edition: 3
 VignetteBuilder: knitr
