@@ -12,18 +12,23 @@ This document was compiled on
 Sys.time()
 ```
 
-In order to reproduce this document from source, please follow the following procedure:
+In order to reproduce this document from source, including generating all the
+files it depends on, please follow the following procedure:
 
-**DE:** _The following is not clear to me.  We need to talk about how to rephrase this._
+The file `expected_outputs.RData` contains the results of simulations
+of the old EPAC model, which uses legacy `macpan2`.  Regenerating
+these simulations would require installing the old version and then
+running the code, as follows:
 
-Scripts to recreate expected output objects (already generated), to be run 
-on old `EPACmodel` version:
 ```{r eval=FALSE}
-##Install old version of EPACmodel
+## Install old version of EPACmodel:
 remotes::install_github("phac-modelling-hub/EPACmodel@v1.3.0")
 
+## load the old EPACmodel
 library(EPACmodel)
 
+## simulate five-year-age-groups model without and with a change in age-based
+## contact patterns part way through the simulation:
 old_sim <- make_simulator("five-year-age-groups")
 old_sim_change <- make_simulator("five-year-age-groups", "change-contacts")
 expected_output <- simulate(old_sim)
@@ -32,14 +37,10 @@ expected_output_change <- simulate(old_sim_change)
 save(expected_output, expected_output_change, file = "dev/expected_outputs.RData")
 ```
 
-Run this once to ensure you are on the updated fork of `EPACmodel` as of writing
-this document:
+Assuming you have acquired or regenerated `expected_outputs.RData`, your next step
+is to ensure that you are on the up-to-date fork of `EPACmodel`.  Do this once:
 ```{r eval=FALSE}
-remotes::install_github("KevinHZhao/EPACmodel@e30793b")
-```
-
-```{r setup, include=FALSE}
-library(EPACmodel)
+remotes::install_github("KevinHZhao/EPACmodel@ee36bc4")
 ```
 
 # a. Reimplementation progress (model features re-implemented successfully, model features outstanding)
@@ -53,23 +54,27 @@ this version of `EPACmodel`.
 The "hosp" model is planned to also be updated, with other models being updated
 if time permits.
 
-From updating to modern `macpan2`, `macpan2::Model` objects no longer exist,
-and `get_model()` now produces `TMBModelSpec` objects.
-The creation of this model object has been modified with the intention of being
-easier to wield with varying age groups; the default values are now scalars
-ignoring age structure, instead of having scalars for each of the age grouped 
-state/flow variables.
-These default values can be modified when the simulator object is built to be
-vectors, as we will later show.
-The model expressions have also been simplified, as they use the age grouped
-state/flow variable vectors to compute the flows at each time step.
-An advantage of these modifications are that now, when building the simulator
-object, it would be very simple to modify the code with different age groups
-by modifying `age.group.lower` in the `run-before-simulator.R` script/making
-it a user specified argument when calling `make_simulator`, and supplying the
-relevant `values` appropriate to the age groupings.
+In the current version of `macpan2`, `macpan2::Model` objects no
+longer exist, and `get_model()` now produces `TMB::TMBModelSpec`
+objects.  We revised `get_model()` to make the creation of age
+structures easier; the default values of the state variables and flow
+parameters are now scalars that ignore age structure, rather than
+scalars for each of the age grouped state variables and flow
+parameters.  These default values can be modified when the simulator
+object is built (with `make_simulator()`) to be vectors, as we will
+later show.  We also simplified the model expressions, as they use the
+age grouped state variable vectors and flow parameter vectors (which
+are stored at the end of each time step if they are updated) to
+compute the flows at each time step.  An advantage of these
+modifications is that now, when building the simulator object, it is
+very simple to modify the code with different age groups by modifying
+`age.group.lower` in the `run-before-simulator.R` script or making
+`age.group.lower` a user specified argument when calling
+`make_simulator`, and supplying the relevant `values` appropriate to
+the age groupings.
 
 ```{r}
+library(EPACmodel)
 model <- get_model("five-year-age-groups")
 print(model)
 ```
@@ -152,7 +157,8 @@ Unit tests equivalent to these "old-and-young" model tests have been added for
 the `get_model()` and `simulate()` functions when using the "five-year-age-groups" model.
 For the `make_simulator()` tests, one of the tests checks that "transmission" is
 properly updated to be all "0" when given the appropriate `values`.
-Before, "transmission" was obtained by running
+In the previous version of `EPACmodel` using the old version of `macpan2`,
+"transmission" was obtained by running
 
 ```{r eval=FALSE}
     make_simulator(
@@ -160,7 +166,8 @@ Before, "transmission" was obtained by running
       values = values)$tmb_model$data_arg()$mats[[3]]
 ```
 
-but due to re-ordering in our updates, we have modified this test to run
+but due to re-ordering in our updates, we have modified this test 
+to refer to `[[1]]` rather `[[3]]`, so we run
 
 ```{r eval=FALSE}
     make_simulator(
