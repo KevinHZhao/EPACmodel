@@ -16,9 +16,9 @@ In order to reproduce this document from source, including generating all the
 files it depends on, please follow the following procedure:
 
 The file `expected_outputs.RData` contains the results of simulations
-of the old EPAC model, which uses legacy `macpan2`.  Regenerating
-these simulations would require installing the old version and then
-running the code, as follows:
+of the old EPAC model, which uses legacy `macpan2`.  Regenerating these
+simulations would require installing the old version and then running
+the code, as follows:
 
 ```{r eval=FALSE}
 ## Install old version of EPACmodel:
@@ -37,7 +37,8 @@ expected_output_change <- simulate(old_sim_change)
 save(expected_output, expected_output_change, file = "dev/expected_outputs.RData")
 ```
 
-Assuming you have acquired or regenerated `expected_outputs.RData`, your next step
+Whether you have regenerated `expected_outputs.RData` or are just using
+the saved version on the `EPACmodel` repo, your next step
 is to ensure that you are on the up-to-date fork of `EPACmodel`.  Do this once:
 ```{r eval=FALSE}
 remotes::install_github("KevinHZhao/EPACmodel@ee36bc4")
