@@ -1,7 +1,9 @@
+age.group.lower = seq(0, 80, by = 5)
+
 # make contact data, if not provided
 if(is.null(values$contact.pars)){
   values$contact.pars = mk_contact_pars(
-    age.group.lower = seq(0, 80, by = 5),
+    age.group.lower = age.group.lower,
     setting.weight = values$setting.weight,
     pop.new = values$pop
   )

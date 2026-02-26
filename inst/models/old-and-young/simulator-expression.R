@@ -1,29 +1,81 @@
-model$simulators$tmb(
-  time_steps = values$time.steps,
-  state = values$state,
-  flow = c(
-    infection_y = NA,
-    progression_y = values$params[["progression_y"]],
-    hospitalization_y = values$params[["hospitalization_y"]],
-    discharge_y = values$params[["discharge_y"]],
-    recovery_y = values$params[["recovery_y"]],
-    deathH_y = values$params[["deathH_y"]],
-    deathI_y = values$params[["deathI_y"]],
-    infection_o = NA,
-    progression_o = values$params[["progression_o"]],
-    hospitalization_o = values$params[["hospitalization_o"]],
-    discharge_o = values$params[["discharge_o"]],
-    recovery_o = values$params[["recovery_o"]],
-    deathH_o = values$params[["deathH_o"]],
-    deathI_o = values$params[["deathI_o"]]),
-  transmission_y = values$params[["transmission_y"]],
-  transmission_o = values$params[["transmission_o"]],
-  c_yy = values$params[["c_yy"]],
-  c_yo = values$params[["c_yo"]],
-  c_oy = values$params[["c_oy"]],
-  c_oo = values$params[["c_oo"]],
-  N_y = macpan2::empty_matrix,
-  N_o = macpan2::empty_matrix,
-  .mats_to_return = c("state", "total_inflow"),
-  .dimnames = list(total_inflow = list(names(values$state), ""))
+states <- c(
+  "S",
+  "E",
+  "R",
+  "H",
+  "I",
+  "D"
 )
+
+age_over <- c(
+  states,
+  "N",
+  "prog",
+  "rec",
+  "hosp",
+  "disch",
+  "d_H",
+  "d_I",
+  "infect"
+) # Epi variables to stratify by age over
+
+age.group.lower <- c("y", "o") # SImilar to 5 year age groups, just modified
+nage <- length(age.group.lower)
+agelabs <- age.group.lower
+
+extract_dot <- function(v, var){
+  return(v[grepl(paste0("^",var,"\\_"), names(v))]) # Using _ instead of .
+}
+
+N <- rep(0, nage)
+for (i in states){
+  N <- N + extract_dot(values$state, i)
+}
+
+## Have to build matrix manually
+contact. <- matrix(
+  c(
+    values$params[["c_yy"]],
+    values$params[["c_oy"]],
+    values$params[["c_yo"]],
+    values$params[["c_yy"]]
+  ),
+  nrow = 2
+)
+
+default <-
+  with(values,
+       list(
+         transmission = extract_dot(params, "transmission"),
+         progression = extract_dot(params, "progression"),
+         hospitalization = extract_dot(params, "hospitalization"),
+         discharge = extract_dot(params, "discharge"),
+         recovery = extract_dot(params, "recovery"),
+         death_H = extract_dot(params, "deathH"),
+         death_I = extract_dot(params, "deathI"),
+         contact. = contact.
+       )
+  )
+
+inits <-
+  with(values,
+       list(
+         S = extract_dot(state, "S"),
+         E = extract_dot(state, "E"),
+         I = extract_dot(state, "I"),
+         H = extract_dot(state, "H"),
+         R = extract_dot(state, "R"),
+         D = extract_dot(state, "D")
+       )
+  )
+
+model_simulator <-
+  model |>
+  macpan2::mp_tmb_insert(
+    default = default,
+    inits = inits
+  ) |>
+  macpan2::mp_simulator(
+    time_steps = values$time.steps,
+    outputs = c(states) # This can be changed to for example, age_over to get more of the values for debugging
+  )
