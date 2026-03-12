@@ -6,8 +6,8 @@
 \usage{
 plot_output(
   df,
-  var_colour = "age",
-  var_facet_row = "var",
+  var_colour = "age_group",
+  var_facet_row = "variable_name",
   var_facet_col = "",
   ylim = NULL,
   facet_scales = "free_y"

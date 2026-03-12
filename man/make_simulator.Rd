@@ -4,7 +4,13 @@
 \alias{make_simulator}
 \title{Construct a simulator for a model}
 \usage{
-make_simulator(model.name, scenario.name = NULL, values = NULL, local = FALSE)
+make_simulator(
+  model.name,
+  scenario.name = NULL,
+  values = NULL,
+  output_flows = NULL,
+  local = FALSE
+)
 }
 \arguments{
 \item{model.name}{name of the model (see \code{\link[=list_models]{list_models()}} for options)}
@@ -13,10 +19,13 @@ make_simulator(model.name, scenario.name = NULL, values = NULL, local = FALSE)
 
 \item{values}{Optional. List containing updates to variables + values used to initialize the model simulator. If NULL, use default list is read from disk and used as is.}
 
+\item{output_flows}{Optional. Vector of flows to output, use \code{\link[=list_flows]{list_flows()}} to obtain a list of all flows for the given model.}
+
 \item{local}{logical. if TRUE, use local model definition (in \code{models} subdirectory of main project repo). if FALSE, use package models.}
 }
 \value{
-A \code{\link[macpan2:TMBSimulator]{macpan2::TMBSimulator()}} object
+A \code{\link[macpan2:TMBSimulator]{macpan2::TMBSimulator()}} object, with additional \code{agelabs} and \code{model.name}
+component appended, containing the labels of age groups and the model name
 }
 \description{
 Construct a simulator for a model

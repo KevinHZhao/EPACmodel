@@ -5,8 +5,10 @@
 #'
 #' @return A data frame containing simulation results with columns
 #'  - `time`: time in days from simulation start
-#'  - `state_name`: state variable with substructure (e.g., "S.lb0")
-#'  - `value_type`: type of state variable (e.g., "S")
+#'  - `age_group`: age group label of relevant state/flow variable (0 if not an
+#'   age structured variable)
+#'  - `variable_name`: name of state/flow variable (e.g., "S")
+#'  - `value_type`: type of values, such as `state` (count of individuals in a compartment) and `flow` (flows between compartments)
 #'  - `value`
 #' @export
 simulate <- function(simulator, values = NULL) {
@@ -16,7 +18,7 @@ simulate <- function(simulator, values = NULL) {
   } else {
     message("Updating simulator values in `simulate` only supported for the `hosp` model currently.")
     # sim with new input values
-    mats <- unique(simulator$current$params_frame()$mat)
+    mats <- unique(simulator$matrix_names()) # params_frame()... doesn't seem to work anymore, not sure if this breaks anything
     pvec = make_pvec(values, mats)
     sim = simulator$report(pvec)
   }
@@ -24,8 +26,11 @@ simulate <- function(simulator, values = NULL) {
   # reformat output
   data.frame(
     time = sim$time,
-    state_name = sim$row,
-    value_type = sim$matrix,
-    value = sim$value
-  )
+    age_group = simulator$agelabs[sim$row + 1], # convert row to relevant age label
+    variable_name = forcats::as_factor(sim$matrix) # enforce order of states
+  ) |>
+    dplyr::mutate(
+      value_type = ifelse(variable_name %in% list_flows(simulator$model.name), "flow", "state"),
+      value = sim$value
+    )
 }

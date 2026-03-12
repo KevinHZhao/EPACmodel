@@ -40,10 +40,26 @@ list_models()
 
 To get a model's simulator, we simply call:
 
-```{r}
+```{r, eval=FALSE}
 model.name <- "old-and-young"
 model_simulator <- make_simulator(
   model.name = model.name
+)
+```
+
+When building the simulator, you can specify which flows you would like to be returned when simulating (if none are specified, only state variables will be returned).  To get a list of all flow variables, use the `list_flows()` function:
+
+```{r}
+list_flows("old-and-young")
+```
+
+To have the simulator also return the number of individuals moving due to the flows `"prog"` (individuals progressing from `E` to `I`) `"d_H"` (individuals moving from `H` to `D`) and `"d_I"` (individuals moving from `I` to `D`) at each time step, we can run:
+
+```{r}
+model.name <- "old-and-young"
+model_simulator <- make_simulator(
+  model.name = model.name,
+  output_flows = c("prog", "d_H", "d_I")
 )
 ```
 
@@ -93,30 +109,28 @@ Since the model simulator already has all required values attached, all required
 For all models, simulation outputs are stored in a data frame with columns
 
 ```
-time | state_name | value_type | value
+time | age_group | variable_name | value_type | value
 ```
 
 The output `value_types` are
 
 - `state`: the number of individuals in given state at a given time,
-- `total_inflow`: the total inflow into a given compartment at a given time.
+- `flow`: flow variables, typically representing number of individuals moving between states at a given time.
+
+The output `variable_name` are the names of state and flow variables, stratified by the relevant age groups.
 
 For instance, here is the number of individuals in each state, stratified by the two age groups `y` (young) and `o` (old), at time 10:
 
 ```{r}
 (sim.output
- |> dplyr::filter(value_type == 'state', time == 10)
+ |> dplyr::filter(value_type == "state", time == 10)
 )
 ```
-
-The total inflow into $I$ compartments can be used to extract disease incidence by age over time:
+To view the number of individuals changing compartments due to the `"prog"` flow:
 
 ```{r}
 (sim.output
- |> dplyr::filter(
-   stringr::str_detect(state_name, "^I"),
-   value_type == 'total_inflow'
- )
+ |> dplyr::filter(variable_name == "prog")
  |> head()
 )
 ```
@@ -126,24 +140,17 @@ We can plot the results using standard data manipulation and plotting tools, lik
 ```{r sim-output-1, echo = FALSE}
 tidy_output = function(output){
    age.lookup = tibble::tibble(
-    age_label = c("y", "o"),
+    age_group = c("y", "o"),
     age = c("young", "old")
   )
-   sep.state = "_"
-  
+   
   (output
-    # parse state names
-     |> tidyr::separate(
-       state_name,
-       into = c("epi_state", "age_label"),
-       sep = sep.state
-     )
      |> dplyr::left_join(
        age.lookup,
-       by = dplyr::join_by(age_label)
+       by = dplyr::join_by(age_group)
      )
-     |> dplyr::select(-age_label)
-     |> dplyr::filter(value_type == 'total_inflow', epi_state == 'I')
+     |> dplyr::select(-age_group)
+     |> dplyr::filter(variable_name == "prog")
    )
 }
 
@@ -195,7 +202,6 @@ model_simulator2 <- make_simulator(model.name2, values = list(time.steps = 365))
 ```{r echo=FALSE}
 (simulate(model_simulator2)
   # these are (non-exported) package functions
- |> EPACmodel:::tidy_output()
  |> EPACmodel:::aggregate_across_age_groups()
  |> EPACmodel:::aggregate_across_epi_subcats()
  |> EPACmodel:::plot_output()
@@ -210,7 +216,6 @@ values2$transmissibility <- values2$transmissibility*(1-0.2) # reduce transmissi
 ```{r echo=FALSE}
 (simulate(model_simulator2, values2)
   # these are (non-exported) package functions
- |> EPACmodel:::tidy_output()
  |> EPACmodel:::aggregate_across_age_groups()
  |> EPACmodel:::aggregate_across_epi_subcats()
  |> EPACmodel:::plot_output()
@@ -238,7 +243,8 @@ We specify that we want to use the `change-transmission` scenario in the call to
 ```{r}
 model_simulator <- make_simulator(
   model.name = "old-and-young",
-  scenario.name = "change-transmission"
+  scenario.name = "change-transmission",
+  output_flows = "prog"
 )
 
 sim.output = simulate(model_simulator)
@@ -247,7 +253,7 @@ sim.output = simulate(model_simulator)
 ```{r sim-output-2, echo = FALSE}
 annotation = tibble::tibble(
   x = values$intervention.day,
-  y = c(2.45e5, 2e5),
+  y = c(5e5, 4e5),
   label = paste0("Change transmission to\n",
                  values$trans.factor.young*100
                  ,"% original value")
@@ -256,7 +262,7 @@ annotation = tibble::tibble(
 (sim.output
  |> tidy_output()
  |> plot_output(
-   ylim = c(0, 2.6e5)
+   ylim = c(0, 5.2e5)
  )
   # add annotations for interventions
   + ggplot2::geom_vline(

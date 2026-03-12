@@ -15,8 +15,10 @@ simulate(simulator, values = NULL)
 A data frame containing simulation results with columns
 \itemize{
 \item \code{time}: time in days from simulation start
-\item \code{state_name}: state variable with substructure (e.g., "S.lb0")
-\item \code{value_type}: type of state variable (e.g., "S")
+\item \code{age_group}: age group label of relevant state/flow variable (0 if not an
+age structured variable)
+\item \code{variable_name}: name of state/flow variable (e.g., "S")
+\item \code{value_type}: type of values, such as \code{state} (count of individuals in a compartment) and \code{flow} (flows between compartments)
 \item \code{value}
 }
 }

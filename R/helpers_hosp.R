@@ -14,13 +14,13 @@ calculate_transmission_hosp <- function(values){
 calculate_flow_hosp <- function(values){
     flow <- init_flow_vec(
         epi_names = c(
-            "progression_to_I_R", "progression_to_I_A", "progression_to_I_D", 
-            "recovery_from_I_R", 
-            "death_from_I_D", 
+            "progression_to_I_R", "progression_to_I_A", "progression_to_I_D",
+            "recovery_from_I_R",
+            "death_from_I_D",
             "admission_to_A_R", "admission_to_A_CR",
-            "admission_to_A_CD", "admission_to_A_D", 
+            "admission_to_A_CD", "admission_to_A_D",
             "discharge_from_A_R",
-            "admission_to_C_R", "admission_to_C_D", 
+            "admission_to_C_R", "admission_to_C_D",
             "death_from_A_D",
             "discharge_from_C_R",
             "death_from_C_D"
@@ -28,8 +28,8 @@ calculate_flow_hosp <- function(values){
         age_groups = seq(0, 80, by = 5)
     )
 
-    (flow 
-        # progression of illness 
+    (flow
+        # progression of illness
         |> update_flows_progression(
             values$days_incubation, values$prop_hosp, values$prop_nonhosp_death
         )
@@ -230,7 +230,7 @@ add_to_pf <- function(pf, matrix.name, matrix){
 }
 
 # to make the largest possible parameter vec to pass to the simulator
-# including all pars, like the change-contacts scenario 
+# including all pars, like the change-contacts scenario
 # (even if it's not present, will filter down later)
 make_pvec <- function(values, mats){
 
@@ -240,7 +240,7 @@ make_pvec <- function(values, mats){
         setting.weight = values$setting.weight,
         pop.new = values$pop
     )
-    
+
     # allow user to pass flow directly and avoid recalculation from
     # epi parameters (_e.g._ if tailoring certain params by age)
     if ("flow" %in% names(values)) {
@@ -296,7 +296,7 @@ make_pvec <- function(values, mats){
 
 #' Aggregate simulation results into age groups
 #'
-#' @param df simulation output, data frame with columns `scenario`, `time`, `var`, `age`, and `value`, where `age` gives the lower bound of the original five-year age groups
+#' @param df simulation output, data frame with columns `time`, `age_group`, `variable_name`, `value_type`, and `value`, where `age_group` gives the lower bound of the original five-year age groups
 #' @param breaks lower bounds for new (aggregated) age groups
 #'
 #' @return data frame with new aggregated `age_group` column
@@ -312,28 +312,28 @@ aggregate_across_age_groups = function(df, breaks = c(20, 60)){
   age_group_labels = paste0(breaks, dplyr::lead(paste0("-", as.character(breaks-1)), default = "+"))
 
   (df
-    |> dplyr::mutate(age = as.numeric(age))
-    |> dplyr::arrange(age) # to ensure lookup that gets joined below
+    |> dplyr::mutate(age_group = as.numeric(age_group))
+    |> dplyr::arrange(age_group) # to ensure lookup that gets joined below
     # is created with the right matches of (cut) age to age group label
     |> dplyr::mutate(
-      age = cut(age,
+      age_group = cut(age_group,
                 breaks = breaks,
                 right = FALSE, include.lowest = TRUE)
     )
     |> (\(x) {dplyr::left_join(x, tibble::tibble(
-      age = unique(x$age),
-      age_group = age_group_labels
+      age_group = unique(x$age_group),
+      age_group_lab = age_group_labels
     ),
-    by = dplyr::join_by(age))})()
+    by = dplyr::join_by(age_group))})()
     |> dplyr::transmute(
       time,
-      var,
-      age = age_group,
+      variable_name,
+      age_group = age_group_lab,
       value
     )
-    |> dplyr::mutate(age = forcats::as_factor(age))
+    |> dplyr::mutate(age_group = forcats::as_factor(age_group))
     |> dplyr::group_by(
-      time, var, age
+      time, variable_name, age_group
     )
     |> dplyr::summarise(value = sum(value), .groups = "drop")
   )
@@ -341,48 +341,19 @@ aggregate_across_age_groups = function(df, breaks = c(20, 60)){
 
 #' Aggregate simulation results into overall epi categories
 #'
-#' @param df simulation output, data frame with columns `scenario`, `time`, `var`, `age`, and `value`, where `age` gives the lower bound of the original five-year age groups
+#' @param df simulation output, data frame with columns `time`, `age_group`, `variable_name`, `value_type`, and `value`, where `age_group` gives the lower bound of the original five-year age groups
 #'
 #' @return data frame with values aggregated across epidemiological subcategories
 aggregate_across_epi_subcats <- function(df) {
     (df
-    |> tidyr::separate(var,
-            into = c("var", "var_subcat"),
+    |> tidyr::separate(variable_name,
+            into = c("variable_name", "variable_subcat"),
             sep = "_", extra = "merge", fill = "right"
         )
-        |> dplyr::mutate(var = forcats::as_factor(var))
-        |> dplyr::group_by(time, var, age)
+        |> dplyr::mutate(variable_name = forcats::as_factor(variable_name))
+        |> dplyr::group_by(time, variable_name, age_group)
         |> dplyr::summarise(value = sum(value), .groups = "drop")
     )
-}
-
-#' Aggregate simulation results into overall epi categories
-#'
-#' @param output simulation output from [simulate()]
-#' @param value_type value type to keep in tidied output
-#'
-#' @return data frame with values aggregated across epidemiological subcategories
-tidy_output = function(output, value_type = "state") {
-    if (!is.null(value_type)) {
-        output <- (output
-        |> dplyr::filter(value_type %in% !!value_type)
-        )
-    }
-
-    output <- (output
-    # parse state names
-    |> tidyr::separate(
-            state_name,
-            into = c("var", "age"),
-            sep = ".lb"
-        )
-        # enforce order of states
-        |> dplyr::mutate(
-            var = forcats::as_factor(var)
-        )
-    )
-
-    output
 }
 
 #' Plot tidied simulation output
@@ -397,8 +368,8 @@ tidy_output = function(output, value_type = "state") {
 #' @return a [ggplot2::ggplot] object
 plot_output <- function(
     df,
-    var_colour = "age",
-    var_facet_row = "var",
+    var_colour = "age_group",
+    var_facet_row = "variable_name",
     var_facet_col = "",
     ylim = NULL,
     facet_scales = "free_y") {

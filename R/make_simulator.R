@@ -3,16 +3,23 @@
 #' @template param_model.name
 #' @param scenario.name Optional. Name of scenario to simulate. See README for `model.name` for options. If NULL, use base model.
 #' @param values Optional. List containing updates to variables + values used to initialize the model simulator. If NULL, use default list is read from disk and used as is.
+#' @param output_flows Optional. Vector of flows to output, use [list_flows()] to obtain a list of all flows for the given model.
 #' @template param_local
 #'
-#' @return A [macpan2::TMBSimulator()] object
+#' @return A [macpan2::TMBSimulator()] object, with additional `agelabs` and `model.name`
+#' component appended, containing the labels of age groups and the model name
 #' @export
 make_simulator <- function(
   model.name,
   scenario.name = NULL,
   values = NULL,
+  output_flows = NULL,
   local = FALSE
 ){
+  if(!all(output_flows %in% list_flows(model.name))){
+    stop("output_flows contains non-flow variable names.\n")
+  }
+
   # Convert NULL scenario.name to empty string to make if statements cleaner
   if(is.null(scenario.name)) scenario.name = ""
 
@@ -79,6 +86,9 @@ make_simulator <- function(
       after.sim.file.name
     )))
   }
+
+  model_simulator$agelabs <- agelabs # add agelabs to the simulator for simulate()
+  model_simulator$model.name <- model.name # add model name to the simulator for simulate()
 
   return(model_simulator)
 }

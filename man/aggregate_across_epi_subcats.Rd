@@ -7,7 +7,7 @@
 aggregate_across_epi_subcats(df)
 }
 \arguments{
-\item{df}{simulation output, data frame with columns \code{scenario}, \code{time}, \code{var}, \code{age}, and \code{value}, where \code{age} gives the lower bound of the original five-year age groups}
+\item{df}{simulation output, data frame with columns \code{time}, \code{age_group}, \code{variable_name}, \code{value_type}, and \code{value}, where \code{age_group} gives the lower bound of the original five-year age groups}
 }
 \value{
 data frame with values aggregated across epidemiological subcategories
