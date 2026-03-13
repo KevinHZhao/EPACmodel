@@ -6,7 +6,7 @@ This version of the model features a basic epidemiological structure stratified 
 - $E$: exposed
 - $I_x$: infected, with fate $x$, where $x$ is either:
     - $R$, recovered without hospitalization,
-    - $H$, hospitalized, or 
+    - $A$, hospitalized, or 
     - $D$, dead
 - $A_y$: hospitalized in acute care, with fate $y$, where $y$ is either:
     - $R$, recovered after acute care only
@@ -21,6 +21,28 @@ The flows within each age group are as follows:
 ![](figs/hosp.png)
 
 The solid lines indicate flows between compartments and the dashed lines indicate when a compartment is involved in calculating a flow rate.
+
+The flow variables that can be obtained for this model are:
+
+- `N`: total population (not a flow)
+- `I`: total infectious (not a flow)
+- `scaled_infected`: number of infectious individuals scaled transmission/$N$ (not a flow)
+- `infect`: movement from $S$ to $E$, number of susceptibles from each age group being exposed
+- `prog_R`: movement from $E$ to $I_R$, number of exposed from each age group becoming infectious with fate recovery
+- `prog_A`: movement from $E$ to $I_A$, number of exposed from each age group becoming infectious with fate hospitalization
+- `prog_D`: movement from $E$ to $I_D$, number of exposed from each age group becoming infectious with fate death
+- `rec_R`: movement from $I_R$ to $R$, number of infectious from each age group recovering
+- `d_I`: movement from $I$ to $D$, number of infectious from each age group dying
+- `adm_AR`: movement from $I_A$ to $A_R$, number of infectious from each age group being hospitalized with fate recovery
+- `adm_ACR`: movement from $I_A$ to $A_CR$, number of infectious from each age group being hospitalized with fate critical care with prognosis recovery
+- `adm_ACD`: movement from $I_A$ to $A_CD$, number of infectious from each age group being hospitalized with fate critical care with prognosis death
+- `adm_AD`: movement from $I_A$ to $A_R$, number of infectious from each age group being hospitalized with fate death
+- `disch_A`: movement from $A_R$ to $R$, number of hospitalized from each age group recovering
+- `adm_CR`: movement from $A_CR$ to $C_R$, number of hospitalized critical with fate recovery moving to critical care with fate recovery
+- `adm_CD`: movement from $A_CD$ to $C_D$, number of hospitalized critical with fate death moving to critical care with fate death
+- `d_A`: movement from $A_D$ to $D$, number of hospitalized from each age group dying
+- `disch_C`: movement from $C_R$ to $R$, number of critical care with fate recovery from each age group recovering
+- `d_C`: movement from $C_D$ to $D$, number of critical care with fate death from each age group dying
 
 #### Age-based transmission
 

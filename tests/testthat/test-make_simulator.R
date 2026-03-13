@@ -26,3 +26,19 @@ test_that("simulator from five-year-age-groups snapshot is consistent", {
 test_that("simulator from five-year-age-groups with change-contacts snapshot is consistent", {
   expect_snapshot(make_simulator("five-year-age-groups", "change-contacts"))
 })
+
+test_that("simulator from hosp snapshot is consistent", {
+  expect_snapshot(make_simulator("hosp"))
+})
+
+test_that("simulator from hosp with change-contacts snapshot is consistent", {
+  expect_snapshot(make_simulator("hosp", "change-contacts"))
+})
+
+test_that("simulator from old-and-young snapshot is consistent", {
+  expect_snapshot(make_simulator("old-and-young"))
+})
+
+test_that("simulator from old-and-young with change-transmission snapshot is consistent", {
+  expect_snapshot(make_simulator("old-and-young", "change-transmission"))
+})

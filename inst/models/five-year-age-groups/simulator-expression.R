@@ -113,9 +113,40 @@ inits <-
        )
   )
 
+## This used to be done after making the simulator but to use modern macpan2
+## functions requires modifying the model not the simulator
+expr <- list()
+if(scenario.name == "change-contacts"){
+  default <- append(
+    default,
+    list(
+      contact_changepoints = c(0, values$intervention.day),
+      contact_values = rbind(contact.pars.initial$p.mat,
+                             contact.pars.new$p.mat),
+      transmission_values = cbind(
+        values$transmissibility*contact.pars.initial$c.hat,
+        values$trans.factor*values$transmissibility*contact.pars.new$c.hat
+      ),
+      contact_pointer = 0,
+      n.age.group = length(age.group.lower)
+    )
+  )
+
+  expr <- list(
+    contact_pointer ~ time_group(contact_pointer, contact_changepoints)
+    , contact. ~ block(contact_values, n.age.group * contact_pointer,
+                       0, n.age.group, n.age.group)
+    , transmission ~ block(transmission_values,
+                           0, contact_pointer,
+                           n.age.group, 1)
+  )
+}
+
 model_simulator <-
   model |>
   macpan2::mp_tmb_insert(
+    phase = "during",
+    expressions = expr,
     default = default,
     inits = inits
   ) |>
@@ -123,31 +154,5 @@ model_simulator <-
     time_steps = values$time.steps,
     outputs = c(states, output_flows) # This can be changed to for example, age_over to get more of the values for debugging
   )
-
-# run-after-simulator.R
-if(scenario.name == "change-contacts"){
-  model_simulator$add$matrices(
-    contact_changepoints = c(0, values$intervention.day)
-    # need to have "changepoint" for initial set of pars at t = 0
-    , contact_pointer = 0
-    , contact_values = rbind(contact.pars.initial$p.mat,
-                             contact.pars.new$p.mat)
-    , transmission_values = cbind(
-      values$transmissibility*contact.pars.initial$c.hat,
-      values$trans.factor*values$transmissibility*contact.pars.new$c.hat
-    )
-    , n.age.group = length(age.group.lower)
-    , .mats_to_save = c("contact.", "transmission")
-    #, .mats_to_return = c("contact.", "transmission") # Not returning for consistency with other scenario
-  )$insert$expressions(
-    contact_pointer ~ time_group(contact_pointer, contact_changepoints)
-    , contact. ~ block(contact_values, n.age.group * contact_pointer,
-                       0, n.age.group, n.age.group)
-    , transmission ~ block(transmission_values,
-                           0, contact_pointer,
-                           n.age.group, 1)
-    , .phase = "during"
-  ) # This should still work, but might not be a good way to do things
-}
 
 model_simulator

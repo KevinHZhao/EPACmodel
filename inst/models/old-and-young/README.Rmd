@@ -15,6 +15,18 @@ The flows within each age group are as follows:
 
 The solid lines indicate flows between compartments and the dashed lines indicate when a compartment is involved in calculating a flow rate.
 
+The flow variables that can be obtained for this model are:
+
+- `N`: total population (not a flow)
+- `scaled_infected`: number of infectious individuals scaled transmission/$N$ (not a flow)
+- `infect`: movement from $S$ to $E$, number of susceptibles from each age group being exposed
+- `prog`: movement from $E$ to $I$, number of exposed from each age group becoming infectious
+- `hosp`: movement from $I$ to $H$, number of infectious from each age group becoming hospitalized
+- `disch`: movement from $H$ to $R$, number of hospitalized from each age group recovering
+- `rec`: movement from $I$ to $R$, number of infectious from each age group recovering
+- `d_H`: movement from $H$ to $D$, number of hospitalized from each age group dying
+- `d_I`: movement from $I$ to $D$, number of infectious from each age group dying
+
 #### Age-based transmission
 
 The force of infection for age group $i$, $\lambda_i$, which is the per-capita rate of flow of age $i$ susceptibles into the exposed class (of the same age), is modelled as

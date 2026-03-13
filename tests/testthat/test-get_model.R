@@ -12,3 +12,13 @@ test_that("get_model() returns an expected snapshot for five-year-age-groups", {
   model = get_model("five-year-age-groups")
   expect_snapshot(model)
 })
+
+test_that("get_model() returns an expected snapshot for hosp", {
+  model = get_model("hosp")
+  expect_snapshot(model)
+})
+
+test_that("get_model() returns an expected snapshot for old-and-young", {
+  model = get_model("old-and-young")
+  expect_snapshot(model)
+})

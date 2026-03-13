@@ -21,3 +21,17 @@ test_that("simulate() returns expected snapshot for five-year-age-groups with ch
   simulator = make_simulator(model.name = "five-year-age-groups", scenario.name = "change-contacts")
   expect_snapshot(simulate(simulator))
 })
+
+test_that("simulate() returns expected snapshot for default hosp", {
+  simulator = make_simulator(model.name = "hosp")
+  expect_snapshot(simulate(simulator))
+})
+
+test_that("simulate() returns expected snapshot for hosp with change-contacts", {
+  simulator = make_simulator(model.name = "hosp", scenario.name = "change-contacts")
+  expect_snapshot(simulate(simulator))
+})
+
+test_that("simulate() updates hosp simulators properly",{
+  simulator = make_simulator(model.name = "hosp", scenario.name = "change-contacts")
+})

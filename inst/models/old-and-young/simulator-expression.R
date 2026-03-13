@@ -70,53 +70,55 @@ inits <-
        )
   )
 
-model_simulator <-
-  model |>
-  macpan2::mp_tmb_insert(
-    default = default,
-    inits = inits
-  ) |>
-  macpan2::mp_simulator(
-    time_steps = values$time.steps,
-    outputs = c(states, output_flows) # This can be changed to for example, age_over to get more of the values for debugging
-  )
-
-#run-after-simulator.R
+## This used to be done after making the simulator but to use modern macpan2
+## functions requires modifying the model not the simulator
+expr <- list()
+ints <- list()
 if(scenario.name == "change-transmission"){
   # modifications to the base model to incorporate time-varying, age-based interventions
 
   trans_times <- c(0, values$intervention.day) # time of interventions
   # need to include initial day, even though that's not technically
   # an intervention day
-  transval_o <- model_simulator$get$initial("transmission")[2,] # may have flipped these
+  transval_o <- values$params[["transmission_o"]]
   transfactors_o <- c(1, values$trans.factor.old) # multiple of transmission rate for old
-
   transvec_o <- transval_o*transfactors_o
 
-  transval_y <- model_simulator$get$initial("transmission")[1,] # may have flipped these
+  transval_y <- values$params[["transmission_y"]]
   transfactors_y <- c(1, values$trans.factor.young) # multiple of transmission rate for young
-
   transvec_y <- transval_y*transfactors_y
 
-  model_simulator$add$matrices(transmission_o_changepoints = trans_times)
-  model_simulator$add$matrices(transmission_y_changepoints = trans_times)
-
-  model_simulator$add$matrices(transmission_y_values = transvec_y)
-  model_simulator$add$matrices(transmission_o_values = transvec_o)
-
-  model_simulator$add$matrices(transmission_y_pointer = 0)
-  model_simulator$add$matrices(transmission_o_pointer = 0)
-
-  model_simulator$insert$expressions(
-    transmission_y_pointer ~ time_group(transmission_y_pointer, transmission_y_changepoints)
-    , transmission_o_pointer ~ time_group(transmission_o_pointer, transmission_o_changepoints)
-    , .phase = "during"
+  default <- append(
+    default,
+    list(
+      transmission_y_values = transvec_y,
+      transmission_o_values = transvec_o
+    )
   )
 
-  model_simulator$insert$expressions(
-    transmission ~ c(transmission_y_values[transmission_y_pointer], transmission_o_values[transmission_o_pointer])
-    , .phase = "during"
+  ints <- list(
+    transmission_o_changepoints = trans_times,
+    transmission_y_changepoints = trans_times
+  )
+
+  expr <- list(
+    transmission ~ c(time_var(transmission_y_values, transmission_y_changepoints),
+                     time_var(transmission_o_values, transmission_o_changepoints))
   )
 }
+
+model_simulator <-
+  model |>
+  macpan2::mp_tmb_insert(
+    phase = "during",
+    expressions = expr,
+    default = default,
+    inits = inits,
+    integers = ints
+  ) |>
+  macpan2::mp_simulator(
+    time_steps = values$time.steps,
+    outputs = c(states, output_flows) # This can be changed to for example, age_over to get more of the values for debugging
+  )
 
 model_simulator
