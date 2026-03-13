@@ -77,7 +77,8 @@ ints <- list()
 if(scenario.name == "change-transmission"){
   # modifications to the base model to incorporate time-varying, age-based interventions
 
-  trans_times <- c(0, values$intervention.day) # time of interventions
+  trans_times <- c(0, values$intervention.day + 1) # time of interventions
+  # Need to add one to get time_var to work?  having to add 1 here seems odd... could be weird behaviour to do with time_var/indexing on the cpp side?
   # need to include initial day, even though that's not technically
   # an intervention day
   transval_o <- values$params[["transmission_o"]]
