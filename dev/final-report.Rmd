@@ -141,8 +141,8 @@ file specifying what each of these flows in each model represent.
 - `?make_simulator` now has an "output_flows" argument, which is a vector of flows
 from `list_flows()` that the user wishes the model would return when simulating.
 - `?simulate` has been modified to specify that the output is now a five column
-data frame, where age and variable names are now separate, and the value_type
-column is only now only ever "state" or "flow" (total_inflows from the previous
+data frame, where age and variable names are now separate, and the `value_type`
+column is now only ever "state" or "flow" ("total_inflows" from the previous
 implementation are now gone, but equivalent information can be obtained from flow
 variables).
 - The `EPACmodel.Rmd` and `local-models.Rmd` vignettes have been updated 
