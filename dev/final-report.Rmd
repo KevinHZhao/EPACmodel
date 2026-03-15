@@ -159,7 +159,7 @@ and/or fixed by the re-implementation.
 
 We have updated the `make_simulator()`, `get_model()`, and `simulate()` functions
 to use modern `macpan2` when creating and simulating each model in the `EPACmodel`
-package, including in every scenario.
+package, including in each model's available scenarios.
 
 In the current version of `macpan2`, `macpan2::Model` objects no
 longer exist, and `get_model()` now produces `TMB::TMBModelSpec`
@@ -211,8 +211,11 @@ hosp_output <- simulate(hosp_sim)
 print(head(hosp_output |> filter(value_type == "flow")))
 ```
 
-In the above example, we can see exactly how many people progress from the `E`
-compartment to the various `I_x` compartments at each time step.
+In the above example, there are rows for the values of each `prog_x` flow, where
+`x` is `R`, `A`, or `D`.  These represent the number of people progressing from
+the `E` compartment to the various `I_x` compartments at each time step, giving
+us the model's predictions for how many individuals become infectious at each
+time step.
 
 Simulations with the "change-contacts" scenario have also been succesfully
 re-implemented, and parameter values can be modified in the `simulate` function
