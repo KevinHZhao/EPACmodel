@@ -358,7 +358,7 @@ aggregate_across_epi_subcats <- function(df) {
 
 #' Plot tidied simulation output
 #'
-#' @param output tidied simulation output from [tidy_output()]
+#' @param output simulation output
 #' @param var_colour variable name for the colour aesthetic
 #' @param var_facet_row variable name for facet rows
 #' @param var_facet_col variable name for facet columns

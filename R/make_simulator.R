@@ -6,7 +6,8 @@
 #' @param output_flows Optional. Vector of flows to output, use [list_flows()] to obtain a list of all flows for the given model.
 #' @template param_local
 #'
-#' @return A [macpan2::TMBSimulator()] object, with additional `agelabs` and `model.name`
+#' @return A `TMB::TMBSimulator` object created by the [macpan2::mp_simulator()]
+#' function, with additional `agelabs` and `model.name`
 #' component appended, containing the labels of age groups and the model name
 #' @export
 make_simulator <- function(

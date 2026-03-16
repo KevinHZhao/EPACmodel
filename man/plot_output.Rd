@@ -24,7 +24,7 @@ plot_output(
 
 \item{facet_scales}{scales for facets (input into \code{scales} argument of \code{\link[ggplot2:facet_wrap]{ggplot2::facet_wrap()}})}
 
-\item{output}{tidied simulation output from \code{\link[=tidy_output]{tidy_output()}}}
+\item{output}{simulation output}
 }
 \value{
 a \link[ggplot2:ggplot]{ggplot2::ggplot} object

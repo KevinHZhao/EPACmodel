@@ -159,7 +159,9 @@ and/or fixed by the re-implementation.
 
 We have updated the `make_simulator()`, `get_model()`, and `simulate()` functions
 to use modern `macpan2` when creating and simulating each model in the `EPACmodel`
-package, including in each model's available scenarios.
+package, including in each model's available scenarios ("change-contacts" for 
+`hosp`, `hosp-treat` and `five-year-age-groups`/"change-transmission" for
+`old-and-young`).
 
 In the current version of `macpan2`, `macpan2::Model` objects no
 longer exist, and `get_model()` now produces `TMB::TMBModelSpec`

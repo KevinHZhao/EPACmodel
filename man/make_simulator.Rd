@@ -24,7 +24,8 @@ make_simulator(
 \item{local}{logical. if TRUE, use local model definition (in \code{models} subdirectory of main project repo). if FALSE, use package models.}
 }
 \value{
-A \code{\link[macpan2:TMBSimulator]{macpan2::TMBSimulator()}} object, with additional \code{agelabs} and \code{model.name}
+A \code{TMB::TMBSimulator} object created by the \code{\link[macpan2:mp_simulator]{macpan2::mp_simulator()}}
+function, with additional \code{agelabs} and \code{model.name}
 component appended, containing the labels of age groups and the model name
 }
 \description{

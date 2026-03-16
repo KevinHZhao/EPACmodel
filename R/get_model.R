@@ -3,7 +3,7 @@
 #' @template param_model.name
 #' @template param_local
 #'
-#' @return A [macpan2::TMBModelSpec()] object
+#' @return A `TMB::TMBModelSpec` object created by [macpan2::mp_tmb_model_spec()]
 #' @export
 get_model <- function(
     model.name,
