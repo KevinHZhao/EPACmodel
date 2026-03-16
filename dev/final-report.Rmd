@@ -65,7 +65,7 @@ Whether you have regenerated `expected_outputs.RData` or are just using
 the saved version on the `EPACmodel` repo, your next step
 is to ensure that you are on the up-to-date fork of `EPACmodel`.  Do this once:
 ```{r eval=FALSE}
-remotes::install_github("KevinHZhao/EPACmodel@217a3e8")
+remotes::install_github("KevinHZhao/EPACmodel@081ed8d")
 ```
 
 # a. Reimplementation progress (model features re-implemented successfully, model features outstanding)
