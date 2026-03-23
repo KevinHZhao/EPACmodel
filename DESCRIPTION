@@ -5,8 +5,7 @@ Authors@R: c(
     person("Irena", "Papst", email = "irena.papst@phac-aspc.gc.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5901-7585")),
     person("Michael", "WZ",  "Li", role = c("aut"), comment = c(ORCID = "0000-0001-5150-8662")),
     person("Kevin", "H", "Zhao", role = c("ctr"), comment = c(ORCID = "0009-0002-8658-1717")),
-    person("David", "JD", "Earn", role = c("ctr"), comment = c(ORCID = "0000-0002-7562-1341"))
-)
+    person("David", "JD", "Earn", role = c("ctr"), comment = c(ORCID = "0000-0002-7562-1341")))
 Description: Simulate versions of the EPAC model.
 License: MIT + file LICENSE
 URL: https://phac-modelling-hub.github.io/EPACmodel, https://github.com/phac-modelling-hub/EPACmodel
@@ -31,7 +30,8 @@ Suggests:
     tidyr,
     DT,
     forcats,
-    devtools
+    devtools,
+    purrr
 Remotes: canmod/macpan2@614a577
 Config/testthat/edition: 3
 VignetteBuilder: knitr
