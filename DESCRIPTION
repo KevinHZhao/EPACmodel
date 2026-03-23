@@ -4,7 +4,7 @@ Version: 1.3.1
 Authors@R: c( 
     person("Irena", "Papst", email = "irena.papst@phac-aspc.gc.ca", role = c("aut", "cre"), comment = c(ORCID = "0000-0001-5901-7585")),
     person("Michael", "WZ",  "Li", role = c("aut"), comment = c(ORCID = "0000-0001-5150-8662")),
-    person("Kevin", "Zhao", role = c("ctr"), comment = c(ORCID = "0000-0002-2444-4816")),
+    person("Kevin", "H", "Zhao", role = c("ctr")),
     person("David", "JD", "Earn", role = c("ctr"), comment = c(ORCID = "0000-0002-7562-1341"))
 )
 Description: Simulate versions of the EPAC model.
